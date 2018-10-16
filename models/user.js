@@ -16,6 +16,13 @@ schema.set('toObject', {
   }
 });
 
+schema.methods.serialize = function() {
+  return {
+    username: this.username || '',
+    fullName: this.fullName || ''
+  };
+};
+
 schema.methods.validatePassword = function(pwd) {
   const currentUser = this;
   return bcrypt.compare(pwd, currentUser.password);
