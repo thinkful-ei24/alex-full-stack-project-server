@@ -93,7 +93,7 @@ router.post('/', (req, res, next) => {
       return res
         .status(201)
         .location(`/api/users/${result.id}`)
-        .json(result);
+        .json(result.serialize());
     })
     .catch(err => {
       if (err.code === 11000) {

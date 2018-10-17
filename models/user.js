@@ -13,13 +13,15 @@ schema.set('toObject', {
     delete result._id;
     delete result.__v;
     delete result.password;
+    return result;
   }
 });
 
 schema.methods.serialize = function() {
   return {
     username: this.username || '',
-    fullName: this.fullName || ''
+    fullName: this.fullName || '',
+    id: this._id
   };
 };
 

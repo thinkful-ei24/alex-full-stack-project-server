@@ -5,14 +5,14 @@ const cors = require('cors');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-const {localStrategy} = require('./passport/local');
-const {jwtStrategy} = require('./passport/local');
+const { localStrategy, jwtStrategy } = require('./passport/local');
 
 const { PORT, CLIENT_ORIGIN } = require('./config');
 const { dbConnect } = require('./db-mongoose');
 // const {dbConnect} = require('./db-knex');
 const usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
+const questionRouter = require('./routes/questions');
 
 const app = express();
 
@@ -22,27 +22,24 @@ app.use(
   })
 );
 
-app.use(
-  cors({
-    origin: CLIENT_ORIGIN
-  })
-);
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
+  if (req.method === 'OPTIONS') {
+    return res.send(204);
+  }
+  next();
+});
 
-app.use(express.json());
+// app.use(bodyParser.json());
 
 passport.use(localStrategy);
 passport.use(jwtStrategy);
-const jwtAuth = passport.authenticate('jwt', {
-  session: false,
-  failWithError: true
-});
 
 app.use('/api/users', usersRouter);
 app.use('/api', authRouter);
-
-app.get('/api/questions', (req, res, next) => {
-  res.json(data);
-});
+app.use('/api/questions', questionRouter);
 
 function runServer(port = PORT) {
   const server = app
