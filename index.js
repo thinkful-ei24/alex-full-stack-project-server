@@ -32,13 +32,13 @@ app.use(function(req, res, next) {
   next();
 });
 
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
 app.use('/api/users', usersRouter);
-app.use('/api', authRouter);
+app.use('/api/auth', authRouter);
 app.use('/api/questions', questionRouter);
 
 function runServer(port = PORT) {

@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const schema = new mongoose.Schema({
-  fullName: { type: String, default: '' },
+  firstName: { type: String, default: '' },
+  lastName: { type: String, default: '' },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true }
 });
@@ -20,7 +21,6 @@ schema.set('toObject', {
 schema.methods.serialize = function() {
   return {
     username: this.username || '',
-    fullName: this.fullName || '',
     id: this._id
   };
 };
