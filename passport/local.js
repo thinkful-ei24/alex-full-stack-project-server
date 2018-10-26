@@ -12,7 +12,6 @@ const { JWT_SECRET } = require('../config');
 
 const localStrategy = new LocalStrategy((username, password, callback) => {
   let user;
-  console.log(5);
   User.findOne({ username: username })
     .then(_user => {
       user = _user;
@@ -53,7 +52,6 @@ const jwtStrategy = new JwtStrategy(
   },
   (payload, done) => {
     done(null, payload.user);
-    console.log({ payload });
   }
 );
 

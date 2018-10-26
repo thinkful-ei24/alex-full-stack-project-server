@@ -8,7 +8,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-const data = require('../db/question-data');
+const data = require('../db/data');
 const jwt = require('jsonwebtoken');
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
@@ -18,7 +18,6 @@ router.use(bodyParser.json());
 
 router.get('/', (req, res, next) => {
   // const userId = req.user.id;
-  // console.log(userId);
   // let filter = { userId };
   Question.find()
     .populate('userId')
@@ -55,11 +54,8 @@ router.get('/:id', (req, res, next) => {
 
 router.post('/', jwtAuth, (req, res, next) => {
   const { title, content } = req.body;
-  console.log('req.body', req.body);
   const userId = req.user.id;
-  console.log(userId);
   const newObj = { title, content, userId };
-  console.log(newObj);
 
   Question.create(newObj)
     .then(result => {
