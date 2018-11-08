@@ -20,6 +20,9 @@ router.get('/', (req, res, next) => {
   // const userId = req.user.id;
   // let filter = { userId };
   Question.find()
+    .sort({
+      createdAt: -1
+    })
     .populate('userId')
     .then(results => {
       res.json(results);
@@ -31,7 +34,6 @@ router.get('/', (req, res, next) => {
 
 router.get('/:id', (req, res, next) => {
   const { id } = req.params;
-  const userId = req.user.id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     const err = new Error('The `id` is not valid');
@@ -39,7 +41,8 @@ router.get('/:id', (req, res, next) => {
     return next(err);
   }
 
-  Question.findOne({ _id: id, userId })
+  Question.findOne({ _id: id })
+    .populate('answers.userId')
     .then(result => {
       if (result) {
         res.json(result);
@@ -58,6 +61,28 @@ router.post('/', jwtAuth, (req, res, next) => {
   const newObj = { title, content, userId };
 
   Question.create(newObj)
+    .then(result => {
+      res
+        .location(`${req.originalUrl}/${result.id}`)
+        .status(201)
+        .json(result);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+router.post('/answer/:id', jwtAuth, (req, res, next) => {
+  const query = { _id: req.params.id };
+  const update = {
+    $push: {
+      answers: {
+        content: req.body.content,
+        userId: req.user.id
+      }
+    }
+  };
+  Question.findOneAndUpdate(query, update)
     .then(result => {
       res
         .location(`${req.originalUrl}/${result.id}`)

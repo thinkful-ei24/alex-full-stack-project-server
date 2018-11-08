@@ -3,7 +3,17 @@ const mongoose = require('mongoose');
 const questionSchema = new mongoose.Schema({
   title: { type: String, required: true },
   content: String,
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  answers: [
+    {
+      content: { type: String, required: true },
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+      }
+    }
+  ]
 });
 
 questionSchema.set('timestamps', true);
